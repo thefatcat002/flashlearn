@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 text = cardName
                 setOnClickListener {
                     // Start the CardCreateActivity when this button is clicked
-                    val intent = Intent(this@MainActivity, card_create::class.java)
+                    val intent = Intent(this@MainActivity, CardCreateActivity::class.java)
                     startActivity(intent)
                 }
             }

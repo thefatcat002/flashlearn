@@ -32,7 +32,7 @@ class stack : AppCompatActivity() {
 
         val add = findViewById<Button>(R.id.crt_crd);
         add.setOnClickListener {
-            val intent = Intent(this,card_create::class.java)
+            val intent = Intent(this,CardCreateActivity::class.java)
             startActivity(intent)
         }
 

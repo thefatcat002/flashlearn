@@ -11,23 +11,22 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar // Correct import
+import android.widget.Toolbar
 
 class CardCreateActivity : AppCompatActivity() {
     private lateinit var questionEditText: EditText
     private lateinit var answerEditText: EditText
     private lateinit var saveButton: Button
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_card_create)
+        setContentView(R.layout.activity_card_create) // Ensure this matches your layout file
 
         // Initialize views
-        questionEditText = findViewById(R.id.et_qst)  // Check this ID
-        answerEditText = findViewById(R.id.et_an)    // Check this ID
-        saveButton = findViewById(R.id.save)          // Check this ID
+        questionEditText = findViewById(R.id.et_qst)
+        answerEditText = findViewById(R.id.et_ans)
+        saveButton = findViewById(R.id.save_btn) // Ensure the ID matches
 
         // Set up toolbar and home button
         val homeButton = findViewById<ImageButton>(R.id.imageButton7)
@@ -54,8 +53,9 @@ class CardCreateActivity : AppCompatActivity() {
         val answer = answerEditText.text.toString()
 
         if (question.isNotBlank() && answer.isNotBlank()) {
+            // Save card logic goes here
             Toast.makeText(this, "Card saved!", Toast.LENGTH_SHORT).show()
-            // Optionally clear fields or finish activity
+            // Optionally finish this activity or clear fields
         } else {
             Toast.makeText(this, "Both fields must be filled!", Toast.LENGTH_SHORT).show()
         }
