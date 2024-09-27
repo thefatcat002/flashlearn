@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 
-class card_quiz : AppCompatActivity() {
+class CardQuiz : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -19,7 +19,7 @@ class card_quiz : AppCompatActivity() {
 
         val back = findViewById<ImageButton>(R.id.imageButton3);
         back.setOnClickListener {
-            val intent = Intent(this,stack::class.java)
+            val intent = Intent(this,Stack::class.java)
             startActivity(intent)
         }
 

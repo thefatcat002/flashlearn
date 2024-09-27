@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/khaki"
-    tools:context=".stack">
+    tools:context=".Stack">
 
     <Toolbar
         android:id="@+id/toolbar"
@@ -29,23 +29,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--enter question-->
-    <TextView
-        android:id="@+id/et_qst"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:autofillHints="Question"
-        android:background="@drawable/rounded_corners"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textSize="25sp"
-        android:hint="Card"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <!--scroll view-->
+    <ScrollView
+        android:layout_width="380dp"
+        android:layout_height="360dp"
+        android:layout_marginBottom="130dp"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView2" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/stacks"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Cards"
+                android:textSize="25sp"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+    </ScrollView>
+
 
     <Button
         android:layout_width="150dp"

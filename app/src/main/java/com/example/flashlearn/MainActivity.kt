@@ -8,11 +8,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var mainLayout: ConstraintLayout
+    private lateinit var buttonContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +25,9 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(context, REQUEST_CODE_NEW_STACK)
         }
 
-        mainLayout = findViewById(R.id.main)
+        buttonContainer = findViewById(R.id.stacks)
 
-        ViewCompat.setOnApplyWindowInsetsListener(mainLayout) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(buttonContainer) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -54,13 +54,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            // Set layout parameters
-            val params = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                ConstraintLayout.LayoutParams.WRAP_CONTENT
-            )
-            params.topToBottom = R.id.add_btn // Position it below the add button
-            mainLayout.addView(cardButton, params)
+            // Add the button to the LinearLayout
+            buttonContainer.addView(cardButton)
         } else {
             Toast.makeText(this, "Card name cannot be empty", Toast.LENGTH_SHORT).show()
         }

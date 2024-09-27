@@ -1,5 +1,6 @@
 package com.example.flashlearn
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -12,7 +13,7 @@ import android.widget.ImageButton
 import android.widget.Toast
 
 
-class stack : AppCompatActivity() {
+class Stack : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
