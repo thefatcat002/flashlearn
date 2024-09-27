@@ -25,6 +25,7 @@
         android:layout_marginTop="10dp"
         android:text="Card stack"
         android:textSize="30sp"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -86,7 +87,7 @@
     <!--back button-->
     <ImageButton
         android:contentDescription="@string/app_name"
-        android:id="@+id/imageButton3"
+        android:id="@+id/back_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"

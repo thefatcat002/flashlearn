@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/khaki"
-    tools:context=".card_quiz">
+    tools:context=".CardQuiz">
 
     <Toolbar
         android:id="@+id/toolbar"
@@ -107,7 +107,7 @@
     <!--back button-->
     <ImageButton
         android:contentDescription="Back"
-        android:id="@+id/imageButton3"
+        android:id="@+id/back_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"

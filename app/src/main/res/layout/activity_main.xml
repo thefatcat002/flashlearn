@@ -20,21 +20,23 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-
-
     <!--new card button-->
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="220dp"
         android:text="FlashLearn"
-        android:textSize="30dp"
+        android:textSize="30sp"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!--plus button-->
+
     <ImageButton
         android:contentDescription="Add"
         android:id="@+id/add_btn"
@@ -95,6 +97,7 @@
                 android:layout_height="match_parent"
                 android:hint="New Stacks"
                 android:textSize="25sp"
+                android:textColor="@color/black"
                 android:textAlignment="center"/>
 
 

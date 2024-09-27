@@ -19,7 +19,7 @@ class Stack : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_stack)
 
-        val back = findViewById<ImageButton>(R.id.imageButton3);
+        val back = findViewById<ImageButton>(R.id.back_btn);
         back.setOnClickListener {
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)

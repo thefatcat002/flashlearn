@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity() {
             val cardButton = Button(this).apply {
                 text = cardName
                 setOnClickListener {
-                    // Start the CardCreateActivity when this button is clicked
-                    val intent = Intent(this@MainActivity, CardCreateActivity::class.java)
+                    // Start the StackActivity when this button is clicked
+                    val intent = Intent(this@MainActivity, Stack::class.java)
                     startActivity(intent)
                 }
             }
