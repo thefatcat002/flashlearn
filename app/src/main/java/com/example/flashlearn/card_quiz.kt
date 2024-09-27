@@ -17,7 +17,7 @@ class CardQuiz : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_card_quiz)
 
-        val back = findViewById<ImageButton>(R.id.imageButton3);
+        val back = findViewById<ImageButton>(R.id.back_btn);
         back.setOnClickListener {
             val intent = Intent(this,Stack::class.java)
             startActivity(intent)

@@ -29,6 +29,12 @@ class CardCreateActivity : AppCompatActivity() {
         answerEditText = findViewById(R.id.et_ans)    // EditText for answer
         saveButton = findViewById(R.id.save_btn)      // Button to save the card
 
+        val back = findViewById<ImageButton>(R.id.back_btn);
+        back.setOnClickListener {
+            val intent = Intent(this,Stack::class.java)
+            startActivity(intent)
+        }
+
         // Home button setup
         val homeButton = findViewById<ImageButton>(R.id.imageButton7)
         homeButton.setOnClickListener {
