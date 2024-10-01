@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Install the splash screen
+        // Add the splash screen
         installSplashScreen()
         enableEdgeToEdge()
 
