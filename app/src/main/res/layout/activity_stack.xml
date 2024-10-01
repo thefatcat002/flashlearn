@@ -32,6 +32,7 @@
 
     <!--scroll view-->
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="380dp"
         android:layout_height="360dp"
         android:layout_marginBottom="130dp"
@@ -50,8 +51,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Cards"
-                android:textSize="25sp"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textSize="25sp" />
 
         </LinearLayout>
     </ScrollView>
@@ -66,6 +67,7 @@
         android:hint="Add"
         android:textSize="30sp"
         android:id="@+id/crt_crd"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,6 +81,7 @@
         android:background="@drawable/rounded_corners"
         android:hint="Start"
         android:textSize="30sp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -97,6 +100,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back_btn" />
+
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="420dp"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="@color/red"
+        android:hint="Delete"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView2" />
 
     <!--home button-->
     <ImageButton
