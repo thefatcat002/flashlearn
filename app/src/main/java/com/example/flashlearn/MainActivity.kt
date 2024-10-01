@@ -1,5 +1,7 @@
 package com.example.flashlearn
 
+import android.os.Handler
+import android.os.Looper
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -10,15 +12,28 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 class MainActivity : AppCompatActivity() {
     private lateinit var buttonContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Install the splash screen
+        installSplashScreen()
         enableEdgeToEdge()
+
         setContentView(R.layout.activity_main)
 
+        // Delay the initialization to simulate splash screen duration
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Initialize views after the splash screen delay
+            initializeViews()
+        }, 3000) // Adjust the delay as needed
+    }
+
+    private fun initializeViews() {
         val add = findViewById<ImageButton>(R.id.add_btn)
         add.setOnClickListener {
             val context = Intent(this, NewStack::class.java)
@@ -48,7 +63,6 @@ class MainActivity : AppCompatActivity() {
             val cardButton = Button(this).apply {
                 text = cardName
                 setOnClickListener {
-                    // Start the StackActivity when this button is clicked
                     val intent = Intent(this@MainActivity, Stack::class.java)
                     startActivity(intent)
                 }

@@ -2,37 +2,44 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/plus"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/plus"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Flashlearn"
+        android:theme="@style/Theme.App.SplashScreen"
         tools:targetApi="31">
+
+        <activity
+            android:name=".CardReveal"
+            android:exported="false" />
         <activity
             android:name=".CardCreateActivity"
             android:exported="false" />
         <activity
-            android:name=".card_quiz"
+            android:name=".CardQuiz"
             android:exported="false" />
         <activity
-            android:name=".stack"
+            android:name=".Stack"
             android:exported="false" />
         <activity
             android:name=".NewStack"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.App.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
