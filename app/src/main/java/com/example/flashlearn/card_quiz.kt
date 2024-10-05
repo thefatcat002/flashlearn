@@ -17,9 +17,21 @@ class CardQuiz : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_card_quiz)
 
+        val reveal = findViewById<Button>(R.id.rvl);
+        reveal.setOnClickListener {
+            val intent = Intent(this,CardReveal::class.java)
+            startActivity(intent)
+        }
+
         val back = findViewById<ImageButton>(R.id.back_btn);
         back.setOnClickListener {
             val intent = Intent(this,Stack::class.java)
+            startActivity(intent)
+        }
+
+        val sett = findViewById<ImageButton>(R.id.settings);
+        sett.setOnClickListener {
+            val intent = Intent(this,Settings::class.java)
             startActivity(intent)
         }
 

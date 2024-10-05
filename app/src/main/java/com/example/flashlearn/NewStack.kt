@@ -30,6 +30,12 @@ class NewStack : AppCompatActivity() {
             finish() // Close this activity and return to the previous one
         }
 
+        val sett = findViewById<ImageButton>(R.id.settings);
+        sett.setOnClickListener {
+            val intent = Intent(this,Settings::class.java)
+            startActivity(intent)
+        }
+
         val homeButton = findViewById<ImageButton>(R.id.imageButton7)
         homeButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)

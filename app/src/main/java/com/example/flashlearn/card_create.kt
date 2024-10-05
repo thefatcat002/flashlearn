@@ -24,6 +24,12 @@ class CardCreateActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_card_create)
 
+        val sett = findViewById<ImageButton>(R.id.settings);
+        sett.setOnClickListener {
+            val intent = Intent(this,Settings::class.java)
+            startActivity(intent)
+        }
+
         // Initialize views
         questionEditText = findViewById(R.id.et_qst)  // EditText for question
         answerEditText = findViewById(R.id.et_ans)    // EditText for answer

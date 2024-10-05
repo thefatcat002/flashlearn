@@ -26,6 +26,7 @@ const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 class MainActivity : AppCompatActivity() {
     private lateinit var buttonContainer: LinearLayout
     private lateinit var txtId: TextView
+    private lateinit var musicServiceIntent: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +37,18 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+        // Start music service immediately
+        musicServiceIntent = Intent(this, Settings.MusicService::class.java)
+        startService(musicServiceIntent)
+
+        val sett = findViewById<ImageButton>(R.id.settings)
+        sett.setOnClickListener {
+            val intent = Intent(this, Settings::class.java)
+            startActivity(intent)
+        }
+
         txtId = findViewById(R.id.txtId)
-        buttonContainer = findViewById(R.id.stacks) // Initialize buttonContainer here
+        buttonContainer = findViewById(R.id.stacks)
 
         getMyData()
 
@@ -60,12 +71,10 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<MyDataItem>?>, response: Response<List<MyDataItem>?>) {
                 val responseBody = response.body() ?: return // Handle null response gracefully
 
-
                 for (myData in responseBody) {
                     val cardButton = Button(this@MainActivity).apply {
                         text = myData.id.toString() // Set button text to ID or another relevant field
                         setOnClickListener {
-                            // Handle button click (e.g., start a new activity or show details)
                             val intent = Intent(this@MainActivity, Stack::class.java).apply {
                                 putExtra("ITEM_ID", myData.id) // Pass the ID or other relevant data
                             }
