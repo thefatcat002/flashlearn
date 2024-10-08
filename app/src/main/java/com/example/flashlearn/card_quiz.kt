@@ -23,10 +23,9 @@ class CardQuiz : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val back = findViewById<ImageButton>(R.id.back_btn);
+        val back = findViewById<ImageButton>(R.id.back_btn)
         back.setOnClickListener {
-            val intent = Intent(this,Stack::class.java)
-            startActivity(intent)
+            finish()
         }
 
         val sett = findViewById<ImageButton>(R.id.settings);

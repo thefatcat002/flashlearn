@@ -12,7 +12,6 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 
-
 class Stack : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +30,9 @@ class Stack : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val back = findViewById<ImageButton>(R.id.back_btn);
+        val back = findViewById<ImageButton>(R.id.back_btn)
         back.setOnClickListener {
-            val intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         val home = findViewById<ImageButton>(R.id.imageButton7);
