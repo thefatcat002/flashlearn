@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="16dp"/> <!-- Rounded corners -->
+            <solid android:color="@color/coffee"/> <!-- Button color -->
+            <padding
+                android:left="4dp"
+                android:top="4dp"
+                android:right="4dp"
+                android:bottom="4dp"/> <!-- Optional padding -->
+        </shape>
+    </item>
+    <item android:left="1dp" android:right="1dp" android:top="1dp" android:bottom="1dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="16dp"/> <!-- Rounded corners -->
+            <solid android:color="@android:color/transparent"/> <!-- Transparent for the outline -->
+            <stroke
+                android:width="2dp"
+                android:color="@android:color/black"/> <!-- Black outline -->
+        </shape>
+    </item>
+</layer-list>

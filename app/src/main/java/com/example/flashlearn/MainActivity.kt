@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -74,6 +75,8 @@ class MainActivity : AppCompatActivity() {
                 for (myData in responseBody) {
                     val cardButton = Button(this@MainActivity).apply {
                         text = myData.id.toString() // Set button text to ID or another relevant field
+                        background = resources.getDrawable(R.drawable.rounded_button, null) // Set rounded background
+                        setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white)) // Set text color
                         setOnClickListener {
                             val intent = Intent(this@MainActivity, Stack::class.java).apply {
                                 putExtra("ITEM_ID", myData.id) // Pass the ID or other relevant data
@@ -121,6 +124,8 @@ class MainActivity : AppCompatActivity() {
         if (cardName.isNotBlank()) {
             val cardButton = Button(this).apply {
                 text = cardName
+                background = resources.getDrawable(R.drawable.rounded_button, null) // Set rounded background
+                setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white)) // Set text color
                 setOnClickListener {
                     val intent = Intent(this@MainActivity, Stack::class.java)
                     startActivity(intent)
