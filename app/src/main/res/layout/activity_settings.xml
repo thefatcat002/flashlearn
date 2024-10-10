@@ -5,27 +5,28 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/khaki"
-    tools:context=".settings">
+    android:background="@color/light_green"
+    tools:context=".Settings">
 
     <Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/white"
+        android:layout_height="80dp"
+        android:background="@drawable/rounded_toolbar"
+        android:elevation="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/vlm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/app_name"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="250dp"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/app_name"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,24 +36,24 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Music: On/Off"
-        android:textSize="30sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="110dp"
         android:layout_marginStart="105dp"
+        android:layout_marginTop="110dp"
+        android:hint="Music: On/Off"
+        android:textColor="@color/black"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--back button-->
     <ImageButton
-        android:contentDescription="@string/app_name"
         android:id="@+id/back_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/app_name"
         android:padding="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -60,12 +61,14 @@
 
     <!--home button-->
     <ImageButton
-        android:contentDescription="Home"
         android:id="@+id/imageButton7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="10dp"
         android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="Home"
+        android:elevation="20dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

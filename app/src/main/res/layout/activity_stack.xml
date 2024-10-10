@@ -12,7 +12,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@color/white"
+        android:background="@drawable/rounded_toolbar"
+        android:elevation="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -32,7 +33,7 @@
 
     <!--scroll view-->
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/cards"
         android:layout_width="380dp"
         android:layout_height="360dp"
         android:layout_marginBottom="130dp"
@@ -133,6 +134,7 @@
         android:layout_marginBottom="25dp"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="Home"
+        android:elevation="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -147,6 +149,7 @@
         android:layout_marginBottom="25dp"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="Profile"
+        android:elevation="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/toolbar"
         app:layout_constraintHorizontal_bias="0.508"
