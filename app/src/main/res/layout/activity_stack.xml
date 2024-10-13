@@ -58,9 +58,9 @@
             <Button
                 android:id="@+id/exbtn"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="Ex. button"
-                android:textSize="24sp"
+                android:layout_height="40dp"
+                android:hint="Example"
+                android:textSize="20sp"
                 android:textAlignment="center"
                 android:background="@drawable/rounded_corners"/>
 
