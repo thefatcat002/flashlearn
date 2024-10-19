@@ -1,5 +1,6 @@
 package com.example.flashlearn
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -8,7 +9,6 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,86 +22,100 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val BASE_URL = "https://jsonplaceholder.typicode.com/"
-
 class MainActivity : AppCompatActivity() {
     private lateinit var buttonContainer: LinearLayout
-    private lateinit var txtId: TextView
     private lateinit var musicServiceIntent: Intent
+
+    companion object {
+        const val BASE_URL = "https://probable-bat-dashing.ngrok-free.app/"
+        const val REQUEST_CODE_NEW_STACK = 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Add the splash screen
         installSplashScreen()
         enableEdgeToEdge()
-
         setContentView(R.layout.activity_main)
 
-        // Start music service immediately
-        musicServiceIntent = Intent(this, Settings.MusicService::class.java)
-        startService(musicServiceIntent)
-
-        val sett = findViewById<ImageButton>(R.id.settings)
-        sett.setOnClickListener {
-            val intent = Intent(this, Settings::class.java)
-            startActivity(intent)
+        findViewById<ImageButton>(R.id.settings).setOnClickListener {
+            startActivity(Intent(this, Settings::class.java))
         }
 
-        txtId = findViewById(R.id.txtId)
         buttonContainer = findViewById(R.id.stacks)
+        getDecksData()
 
-        getMyData()
-
-        // Initialize views after a delay to simulate splash screen duration
         Handler(Looper.getMainLooper()).postDelayed({
             initializeViews()
         }, 3000)
     }
 
-    private fun getMyData() {
+    private fun getDecksData() {
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
-            .create(ApiInterface::class.java)
+            .create(APIDecksService::class.java)
 
-        val retrofitData = retrofitBuilder.getData()
-
-        retrofitData.enqueue(object : Callback<List<MyDataItem>?> {
+//        retrofitBuilder.getDecks().enqueue(object : Callback<List<MyDataItem>?> {
+//            override fun onResponse(call: Call<List<MyDataItem>?>, response: Response<List<MyDataItem>?>) {
+//                val responseBody = response.body() ?: run {
+//                    Log.e("MainActivity", "Response body is null")
+//                    return
+//                }
+//
+//                for (deck in responseBody) {
+//                    val deckButton = Button(this@MainActivity).apply {
+//                        text = deck.deck?.deck
+//
+//                        background = ContextCompat.getDrawable(this@MainActivity, R.drawable.rounded_button)
+//                        setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white))
+//                        setOnClickListener {
+//                            val intent = Intent(this@MainActivity, Stack::class.java).apply {
+//                                putExtra("ITEM_ID", deck.deck?.id)
+//                            }
+//                            startActivity(intent)
+//                        }
+//                    }
+//                    buttonContainer.addView(deckButton)
+//                }
+//            }
+        retrofitBuilder.getDecks().enqueue(object : Callback<List<MyDataItem>?> {
             override fun onResponse(call: Call<List<MyDataItem>?>, response: Response<List<MyDataItem>?>) {
-                val responseBody = response.body() ?: return // Handle null response gracefully
+                val responseBody = response.body() ?: run {
+                    Log.e("MainActivity", "Response body is null")
+                    return
+                }
 
-                for (myData in responseBody) {
-                    val cardButton = Button(this@MainActivity).apply {
-                        text = myData.id.toString() // Set button text to ID or another relevant field
-                        background = resources.getDrawable(R.drawable.rounded_button, null) // Set rounded background
-                        setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white)) // Set text color
+                for (item in responseBody) { // Renamed 'deck' to 'item' for clarity
+                    val deckButton = Button(this@MainActivity).apply {
+                        text = item.deck // Accessing the deck name from the Deck object
+
+                        background = ContextCompat.getDrawable(this@MainActivity, R.drawable.rounded_button)
+                        setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white))
                         setOnClickListener {
                             val intent = Intent(this@MainActivity, Stack::class.java).apply {
-                                putExtra("ITEM_ID", myData.id) // Pass the ID or other relevant data
+                                putExtra("ITEM_ID", item.deck) // Accessing the ID from the Deck object
                             }
-                            startActivity(intent) // Start the Stack activity
+                            startActivity(intent)
                         }
                     }
-                    buttonContainer.addView(cardButton) // Add the button to the LinearLayout
+                    buttonContainer.addView(deckButton) // Add the button to the container
                 }
             }
 
             override fun onFailure(call: Call<List<MyDataItem>?>, t: Throwable) {
-                Log.d("MainActivity", "onFailure: ${t.message}") // Use the correct variable 't'
+                Log.e("MainActivity", "Error fetching decks: ${t.message}", t)
+                Toast.makeText(this@MainActivity, "Failed to load decks. Please try again.", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun initializeViews() {
-        val addButton = findViewById<ImageButton>(R.id.add_btn)
-        addButton.setOnClickListener {
-            val intent = Intent(this, NewStack::class.java)
-            startActivityForResult(intent, REQUEST_CODE_NEW_STACK)
+        findViewById<ImageButton>(R.id.add_btn).setOnClickListener {
+            startActivityForResult(Intent(this, NewStack::class.java), REQUEST_CODE_NEW_STACK)
         }
 
-        // Set window insets for button container
         ViewCompat.setOnApplyWindowInsetsListener(buttonContainer) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -111,33 +125,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_NEW_STACK && resultCode == RESULT_OK) {
-            val cardName = data?.getStringExtra("CARD_NAME") ?: run {
-                Toast.makeText(this, "No card name returned", Toast.LENGTH_SHORT).show()
-                return
+        if (requestCode == REQUEST_CODE_NEW_STACK && resultCode == Activity.RESULT_OK) {
+            val deckId = data?.getIntExtra("DECK_ID", -1)
+            if (deckId != null && deckId != -1) {
+                // Fetch the new deck or add it to the UI directly
+                getDecksData() // Optionally refresh the list
             }
-            createCardButton(cardName)
         }
     }
 
-    private fun createCardButton(cardName: String) {
-        if (cardName.isNotBlank()) {
-            val cardButton = Button(this).apply {
-                text = cardName
-                background = resources.getDrawable(R.drawable.rounded_button, null) // Set rounded background
-                setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white)) // Set text color
-                setOnClickListener {
-                    val intent = Intent(this@MainActivity, Stack::class.java)
-                    startActivity(intent)
-                }
-            }
-            buttonContainer.addView(cardButton)
-        } else {
-            Toast.makeText(this, "Card name cannot be empty", Toast.LENGTH_SHORT).show()
-        }
-    }
 
-    companion object {
-        const val REQUEST_CODE_NEW_STACK = 1
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(musicServiceIntent)
     }
 }
