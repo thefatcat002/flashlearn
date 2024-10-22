@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="Home"
-            android:padding="5dp"
+            android:padding="10dp"
             android:elevation="20dp"
             app:srcCompat="@drawable/home" />
 
@@ -109,7 +109,7 @@
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="Profile"
-            android:padding="5dp"
+            android:padding="10dp"
             android:elevation="20dp"
             app:srcCompat="@drawable/setting" />
 

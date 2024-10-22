@@ -81,6 +81,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="Home"
             android:elevation="20dp"
+            android:padding="10dp"
             app:srcCompat="@drawable/home" />
 
         <TextView
@@ -113,6 +114,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="Profile"
             android:elevation="20dp"
+            android:padding="10dp"
             app:srcCompat="@drawable/setting" />
 
         <TextView
