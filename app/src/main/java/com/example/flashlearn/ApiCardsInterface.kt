@@ -17,6 +17,9 @@ interface APICardsService {
         @Path("id") id: Int
     ): Call<CardsDataItem>
 
+    @GET("/api/questions")
+    fun getQuestions(): Call<List<Questions>>
+
     @FormUrlEncoded
     @PUT("/api/questions/{id}")
     fun updateCard(

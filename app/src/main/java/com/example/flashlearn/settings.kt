@@ -1,79 +1,137 @@
 package com.example.flashlearn
 
 import android.app.Service
+import android.content.ComponentName
 import android.content.Intent
-import android.media.MediaPlayer
+import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
+import android.widget.Button
 import android.widget.ImageButton
-import androidx.activity.enableEdgeToEdge
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.airbnb.lottie.LottieAnimationView
 
 class Settings : AppCompatActivity() {
 
     private lateinit var musicServiceIntent: Intent
+    private var musicService: MusicService? = null
+    private var isBound = false
     private var isMusicPlaying = false
+    private lateinit var anibtn: LottieAnimationView
+    private var volumeLevel = 50 // Default volume
+    private var isMuted = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_settings)
-
-        musicServiceIntent = Intent(this, MusicService::class.java)
-
-        val back = findViewById<ImageButton>(R.id.back_btn)
-        back.setOnClickListener {
-            finish()
+    // Service connection to bind with MusicService
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.MusicBinder
+            musicService = binder.getService()
+            isBound = true
+            musicService?.setVolume(volumeLevel / 100f) // Set initial volume
+            Log.d("Settings", "Service connected")
         }
 
-        val home = findViewById<ImageButton>(R.id.imageButton7)
-        home.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-
-        // Button to toggle music
-        val toggle = findViewById<ImageButton>(R.id.vlm)
-        toggle.setOnClickListener {
-            if (isMusicPlaying) {
-                stopService(musicServiceIntent)
-                toggle.setImageResource(R.drawable.mute) // Change to a stop icon
-            } else {
-                startService(musicServiceIntent)
-                toggle.setImageResource(R.drawable.volume) // Change to a play icon
-            }
-            isMusicPlaying = !isMusicPlaying
-        }
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        override fun onServiceDisconnected(name: ComponentName?) {
+            musicService = null
+            isBound = false
+            Log.d("Settings", "Service disconnected")
         }
     }
 
-    // MusicService class
-    class MusicService : Service() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_settings)
 
-        private lateinit var mediaPlayer: MediaPlayer
+        musicServiceIntent = Intent(this, MusicService::class.java)
+        bindService(musicServiceIntent, serviceConnection, BIND_AUTO_CREATE)
 
-        override fun onCreate() {
-            super.onCreate()
-            mediaPlayer = MediaPlayer.create(this, R.raw.cooking) // Replace with your music file
-            mediaPlayer.isLooping = true // Loop the music
-            mediaPlayer.start() // Start playing music
+        val back = findViewById<ImageButton>(R.id.back_btn)
+        back.setOnClickListener { finish() }
+
+        val vlmButton = findViewById<ImageButton>(R.id.vlm)
+        anibtn = findViewById(R.id.ani_btn)
+        val volumeValue = findViewById<TextView>(R.id.volumeValue)
+
+        val increase = findViewById<Button>(R.id.increase)
+        val decrease = findViewById<Button>(R.id.decrease)
+
+        // Increase volume button logic
+        increase.setOnClickListener {
+            if (volumeLevel < 100) {
+                // Unmute if currently muted
+                if (isMuted) {
+                    vlmButton.setImageResource(R.drawable.volume) // Change to unmuted icon
+                    isMuted = false
+                }
+                volumeLevel += 10
+                volumeValue.text = "Volume: $volumeLevel"
+                if (isBound) {
+                    musicService?.setVolume(volumeLevel / 100f)
+                }
+            }
         }
 
-        override fun onDestroy() {
-            super.onDestroy()
-            mediaPlayer.stop()
-            mediaPlayer.release()
+        // Decrease volume button logic
+        decrease.setOnClickListener {
+            if (volumeLevel > 0) {
+                // Unmute if currently muted
+                if (isMuted) {
+                    vlmButton.setImageResource(R.drawable.volume) // Change to unmuted icon
+                    isMuted = false
+                }
+                volumeLevel -= 10
+                volumeValue.text = "Volume: $volumeLevel"
+                if (isBound) {
+                    musicService?.setVolume(volumeLevel / 100f)
+                }
+            }
         }
 
-        override fun onBind(intent: Intent?): IBinder? {
-            return null // Not using binding in this case
+        // Mute/Unmute and Start/Stop music button logic
+        vlmButton.setOnClickListener {
+            if (isMusicPlaying) {
+                // Mute/unmute if music is already playing
+                if (isMuted) {
+                    vlmButton.setImageResource(R.drawable.volume) // Show volume icon
+                    if (isBound) {
+                        musicService?.setVolume(volumeLevel / 100f) // Unmute
+                    }
+                    isMuted = false
+                } else {
+                    vlmButton.setImageResource(R.drawable.mute) // Show mute icon
+                    if (isBound) {
+                        musicService?.setVolume(0f) // Mute
+                    }
+                    isMuted = true
+                }
+            } else {
+                // Start the music service if it's not playing
+                startService(musicServiceIntent)
+                bindService(musicServiceIntent, serviceConnection, BIND_AUTO_CREATE) // Bind again if needed
+                vlmButton.setImageResource(R.drawable.volume) // Set to unmuted icon
+                isMusicPlaying = true
+                isMuted = false // Ensure it's unmuted when starting
+
+                // Add log to confirm method call
+                Log.d("Settings", "Starting music")
+                musicService?.startMusic() // Start playing music
+            }
+
+            // Control Lottie animation here
+            anibtn.speed = 3f
+            anibtn.setMinAndMaxProgress(0.0f, 0.5f)
+            anibtn.playAnimation()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isBound) {
+            unbindService(serviceConnection)
+            isBound = false
+            Log.d("Settings", "Service unbound")
         }
     }
 }

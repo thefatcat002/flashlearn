@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/scrollview_border.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#50FFFFFF" /> <!-- Semi-transparent white background -->
+
+    <!-- Define the border (stroke) -->
+    <stroke
+        android:width="2dp"
+        android:color="#000000" />
+
+    <!-- Define rounded corners (optional) -->
+    <corners android:radius="8dp" /> <!-- Rounded corners -->
+</shape>

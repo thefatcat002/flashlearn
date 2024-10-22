@@ -21,13 +21,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 class Stack : AppCompatActivity() {
     private lateinit var buttonContainer: LinearLayout // Container for dynamically created buttons
 
+    private val questionsList: MutableList<Questions> = mutableListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_stack)
 
         buttonContainer = findViewById(R.id.stacks) // Ensure this matches your layout
-
+        getQuestions()
         // Button to start CardCreateActivity
         val add = findViewById<Button>(R.id.crt_crd)
         add.setOnClickListener {
@@ -69,17 +71,9 @@ class Stack : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CREATE_CARD_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val newCard = data?.getParcelableExtra("NEW_CARD") ?: return
-            addButtonToStack(newCard) // Display the new card
-        }
-    }
-
-    private fun addButtonToStack(card: CardsDataItem) {
+    private fun addButtonToStack(id:Int,question:String,answer:String) {
         val button = Button(this).apply {
-            text = "${card.question}\nAnswer: ${card.answer}" // Display question and answer
+            text = question// Display question and answer
             background = resources.getDrawable(R.drawable.rounded_button, null) // For API 21+
             setTextColor(Color.WHITE) // Set text color as needed
             layoutParams = LinearLayout.LayoutParams(
@@ -88,26 +82,19 @@ class Stack : AppCompatActivity() {
             ).apply {
                 setMargins(8, 8, 8, 8) // Optional margins for spacing between buttons
             }
-            setOnClickListener {
-                // Handle button click to edit or delete
-                handleCardAction(card)
+        }
+
+        button.setOnClickListener {
+            val intent = Intent(this@Stack, CardCreateActivity::class.java).apply {
+                putExtra("QUESTION", question) // Accessing the ID from the Deck object
+                putExtra("ID", id)
+                putExtra("ANSWER", answer)
             }
+            startActivity(intent)
         }
         buttonContainer.addView(button) // Add button to the container
     }
 
-    private fun handleCardAction(card: CardsDataItem) {
-        // Show options to edit the card
-        val options = arrayOf("Edit")
-        val builder = android.app.AlertDialog.Builder(this)
-        builder.setTitle(card.question)
-        builder.setItems(options) { _, which ->
-            when (which) {
-                0 -> editCard(card) // Edit action
-            }
-        }
-        builder.show()
-    }
 
     private fun editCard(card: CardsDataItem) {
         val intent = Intent(this, CardCreateActivity::class.java).apply {
@@ -125,7 +112,7 @@ class Stack : AppCompatActivity() {
 
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("YOUR_QUESTIONS_API_BASE_URL") // Replace with your actual base URL
+            .baseUrl("https://probable-bat-dashing.ngrok-free.app/") // Replace with your actual base URL
             .build()
             .create(APIDecksService::class.java)
 
@@ -142,6 +129,32 @@ class Stack : AppCompatActivity() {
             override fun onFailure(call: Call<Void>, t: Throwable) {
                 Toast.makeText(this@Stack, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
+        })
+    }
+
+    private fun getQuestions(){
+        val retrofitBuilder = Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("YOUR_QUESTIONS_API_BASE_URL") // Replace with your actual base URL
+            .build()
+            .create(APICardsService::class.java)
+
+        retrofitBuilder.getQuestions().enqueue(object : Callback<List<Questions>> {
+            override fun onResponse(p0: Call<List<Questions>>, p1: Response<List<Questions>>) {
+                if (p1.isSuccessful){
+                    questionsList.clear()
+                    questionsList.addAll(p1.body()!!)
+
+                    for (question in questionsList){
+                        addButtonToStack(question.id,question.question,question.answer)
+                    }
+                }
+            }
+
+            override fun onFailure(p0: Call<List<Questions>>, p1: Throwable) {
+                TODO("Not yet implemented")
+            }
+
         })
     }
 

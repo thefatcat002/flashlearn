@@ -57,29 +57,6 @@ class MainActivity : AppCompatActivity() {
             .build()
             .create(APIDecksService::class.java)
 
-//        retrofitBuilder.getDecks().enqueue(object : Callback<List<MyDataItem>?> {
-//            override fun onResponse(call: Call<List<MyDataItem>?>, response: Response<List<MyDataItem>?>) {
-//                val responseBody = response.body() ?: run {
-//                    Log.e("MainActivity", "Response body is null")
-//                    return
-//                }
-//
-//                for (deck in responseBody) {
-//                    val deckButton = Button(this@MainActivity).apply {
-//                        text = deck.deck?.deck
-//
-//                        background = ContextCompat.getDrawable(this@MainActivity, R.drawable.rounded_button)
-//                        setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white))
-//                        setOnClickListener {
-//                            val intent = Intent(this@MainActivity, Stack::class.java).apply {
-//                                putExtra("ITEM_ID", deck.deck?.id)
-//                            }
-//                            startActivity(intent)
-//                        }
-//                    }
-//                    buttonContainer.addView(deckButton)
-//                }
-//            }
         retrofitBuilder.getDecks().enqueue(object : Callback<List<MyDataItem>?> {
             override fun onResponse(call: Call<List<MyDataItem>?>, response: Response<List<MyDataItem>?>) {
                 val responseBody = response.body() ?: run {

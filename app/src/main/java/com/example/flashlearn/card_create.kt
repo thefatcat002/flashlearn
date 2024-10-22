@@ -19,7 +19,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val CARD_URL = "http://192.168.43.105:8000/"
+const val CARD_URL = "https://probable-bat-dashing.ngrok-free.app/"
 
 class CardCreateActivity : AppCompatActivity() {
     private lateinit var questionEditText: EditText

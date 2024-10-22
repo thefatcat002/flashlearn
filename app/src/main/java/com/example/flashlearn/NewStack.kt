@@ -24,7 +24,7 @@ class NewStack : AppCompatActivity() {
     private lateinit var submitButton: Button
 
     companion object {
-        const val BASE_URL = "http://192.168.43.105:8000/"
+        const val BASE_URL = "https://probable-bat-dashing.ngrok-free.app/"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -11,30 +11,5 @@ data class CardsDataItem(
     val question: String, // Question
     val answer: String // Answer
 )
-//) : Parcelable {
-//    constructor(parcel: Parcel) : this(
-//        parcel.readValue(Int::class.java.classLoader) as? Int,
-//        parcel.readString() ?: "",
-//        parcel.readString() ?: ""
-//    )
 
-//    override fun writeToParcel(parcel: Parcel, flags: Int) {
-//        parcel.writeValue(id)
-//        parcel.writeString(title)
-//        parcel.writeString(answer)
-//    }
-//
-//    override fun describeContents(): Int {
-//        return 0
-//    }
-//
-//    companion object CREATOR : Parcelable.Creator<CardsDataItem> {
-//        override fun createFromParcel(parcel: Parcel): CardsDataItem {
-//            return CardsDataItem(parcel)
-//        }
-//
-//        override fun newArray(size: Int): Array<CardsDataItem?> {
-//            return arrayOfNulls(size)
-//        }
-//    }
 
