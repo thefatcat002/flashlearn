@@ -36,7 +36,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="60dp"
         android:autofillHints="stack"
-        android:hint="Enter card name"
+        android:hint="Enter deck title"
         android:inputType="text"
         android:textAlignment="center"
         android:textSize="20sp"
