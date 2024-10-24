@@ -1,6 +1,5 @@
 package com.example.flashlearn
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -71,12 +70,10 @@ class NewStack : AppCompatActivity() {
         retrofitBuilder.createDeck(title).enqueue(object : Callback<PostCreateStack> {
             override fun onResponse(call: Call<PostCreateStack>, response: Response<PostCreateStack>) {
                 if (response.isSuccessful) {
-//                    val resultIntent = Intent().apply {
-//                        putExtra("DECK_ID", response.body())
-//                    }
-//                    setResult(Activity.RESULT_OK, resultIntent)
-                    finish()
                     Toast.makeText(this@NewStack, "Deck created!", Toast.LENGTH_SHORT).show()
+                    val intent2 = Intent(this@NewStack, MainActivity::class.java)
+                    startActivity(intent2)
+                    finish()
                 } else {
                     Log.e("NewStack", "Response Body: ${response.errorBody()?.string()}")
                     Toast.makeText(this@NewStack, "Failed to create deck.", Toast.LENGTH_SHORT).show()

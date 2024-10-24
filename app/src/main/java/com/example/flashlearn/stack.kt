@@ -1,9 +1,9 @@
 package com.example.flashlearn
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,7 +21,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class Stack : AppCompatActivity() {
     private lateinit var buttonContainer: LinearLayout // Container for dynamically created buttons
-
     private val questionsList: MutableList<Questions> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,13 +28,24 @@ class Stack : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_stack)
 
+        val intent = intent
+        val id = intent.getIntExtra("id", 0)
+        val token = intent.getStringExtra("token")
+        Log.e("Token", "Token: $token")
         buttonContainer = findViewById(R.id.stacks) // Ensure this matches your layout
         getQuestions()
         // Button to start CardCreateActivity
         val add = findViewById<Button>(R.id.crt_crd)
         add.setOnClickListener {
-            val intent = Intent(this, CardCreateActivity::class.java)
+            val intent = Intent(this, CardCreateActivity::class.java).apply {
+                putExtra("token", token)
+            }
             startActivityForResult(intent, CREATE_CARD_REQUEST_CODE) // Start for result
+        }
+
+        val delete = findViewById<Button>(R.id.dlt_btn)
+        delete.setOnClickListener {
+            deleteDeck(id)
         }
 
         // Navigation buttons setup
@@ -46,6 +57,8 @@ class Stack : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+
     }
 
     private fun setupNavigationButtons() {
@@ -71,7 +84,7 @@ class Stack : AppCompatActivity() {
         }
     }
 
-    private fun addButtonToStack(id:Int,question:String,answer:String) {
+    private fun addButtonToStack(id: Int, question: String, answer: String, token: String) {
         val button = Button(this).apply {
             text = question// Display question and answer
             background = resources.getDrawable(R.drawable.rounded_button, null) // For API 21+
@@ -86,43 +99,33 @@ class Stack : AppCompatActivity() {
 
         button.setOnClickListener {
             val intent = Intent(this@Stack, CardCreateActivity::class.java).apply {
-                putExtra("QUESTION", question) // Accessing the ID from the Deck object
-                putExtra("ID", id)
-                putExtra("ANSWER", answer)
+                putExtra("question", question) // Accessing the ID from the Deck object
+                putExtra("id", id)
+                putExtra("answer", answer)
+                putExtra("token", token)
+                putExtra("IS_UPDATING", true)
             }
             startActivity(intent)
         }
         buttonContainer.addView(button) // Add button to the container
     }
 
-
-    private fun editCard(card: CardsDataItem) {
-        val intent = Intent(this, CardCreateActivity::class.java).apply {
-            //putExtra("CARD_ID", card.id) // Pass card ID to edit
-        }
-        startActivityForResult(intent, CREATE_CARD_REQUEST_CODE)
-    }
-
-    private fun deleteDeck(cardId: Int?) {
-        // Check if cardId is not null before proceeding
-        if (cardId == null) {
-            Toast.makeText(this, "Invalid card ID.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
+    private fun deleteDeck(id: Int) {
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("https://probable-bat-dashing.ngrok-free.app/") // Replace with your actual base URL
+            .baseUrl("https://probable-bat-dashing.ngrok-free.app/")
             .build()
             .create(APIDecksService::class.java)
 
-        retrofitBuilder.deleteDeck(cardId).enqueue(object : Callback<Void> {
+        retrofitBuilder.deleteDeck(id).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(this@Stack, "Card deleted!", Toast.LENGTH_SHORT).show()
-                    refreshButtons() // Refresh the list of cards
+                    Toast.makeText(this@Stack, "Deck deleted successfully", Toast.LENGTH_SHORT).show()
+                    val intent2 = Intent(this@Stack, MainActivity::class.java)
+                    startActivity(intent2)
+                    finish()
                 } else {
-                    Toast.makeText(this@Stack, "Failed to delete card.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@Stack, "Failed to delete deck", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -133,20 +136,34 @@ class Stack : AppCompatActivity() {
     }
 
     private fun getQuestions(){
+        val token = intent.getStringExtra("token")
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("Authorization", "Bearer $token") // Add token to the header
+                    .build()
+                chain.proceed(request)
+            }
+            .build()
+
         val retrofitBuilder = Retrofit.Builder()
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("YOUR_QUESTIONS_API_BASE_URL") // Replace with your actual base URL
+            .baseUrl("https://probable-bat-dashing.ngrok-free.app/") // Replace with your actual base URL
             .build()
             .create(APICardsService::class.java)
 
-        retrofitBuilder.getQuestions().enqueue(object : Callback<List<Questions>> {
+        retrofitBuilder.getQuestions("Bearer $token").enqueue(object : Callback<List<Questions>> {
             override fun onResponse(p0: Call<List<Questions>>, p1: Response<List<Questions>>) {
                 if (p1.isSuccessful){
                     questionsList.clear()
                     questionsList.addAll(p1.body()!!)
 
                     for (question in questionsList){
-                        addButtonToStack(question.id,question.question,question.answer)
+                        if (token != null) {
+                            addButtonToStack(question.id, question.question, question.answer, token)
+                        }
                     }
                 }
             }
@@ -156,19 +173,6 @@ class Stack : AppCompatActivity() {
             }
 
         })
-    }
-
-
-    private fun refreshButtons() {
-        // Clear existing buttons and reload from the database
-        buttonContainer.removeAllViews()
-        // Call method to fetch and display updated cards
-        fetchCards()
-    }
-
-    private fun fetchCards() {
-        // Implementation for fetching cards from API and displaying them
-        // You will need to implement this based on your existing logic
     }
 
     companion object {

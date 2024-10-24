@@ -1,7 +1,6 @@
 package com.example.flashlearn
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,13 +12,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
-const val CARD_URL = "https://probable-bat-dashing.ngrok-free.app/"
 
 class CardCreateActivity : AppCompatActivity() {
     private lateinit var questionEditText: EditText
@@ -27,12 +25,19 @@ class CardCreateActivity : AppCompatActivity() {
     private lateinit var saveButton: Button
     private lateinit var deleteButton: Button // Updated delete button
     private var cardId: Int? = null // For updating existing cards
+    private var id: Int = 0
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_card_create)
+
+        val intent = intent
+
+        id = intent.getIntExtra("id", 0)
+        val question = intent.getStringExtra("question")
+        val answer = intent.getStringExtra("answer")
 
         questionEditText = findViewById(R.id.et_qst)
         answerEditText = findViewById(R.id.et_ans)
@@ -41,16 +46,19 @@ class CardCreateActivity : AppCompatActivity() {
 
         setupNavigationButtons()
 
-        // Check if we're editing an existing card
-        cardId = intent.getIntExtra("CARD_ID", -1).takeIf { it != -1 }
-        cardId?.let { getCard(it) }
+        if (question != null && answer != null) {
+            questionEditText.setText(question)
+            answerEditText.setText(answer)
+        }
 
         saveButton.setOnClickListener {
-            saveCard()
+            if (questionEditText.text.isNotEmpty() && answerEditText.text.isNotEmpty()) {
+                saveCard(id)
+            }
         }
 
         deleteButton.setOnClickListener {
-            cardId?.let { id -> deleteCard(id) } // Call deleteCard if editing
+            deleteCard(id)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -78,110 +86,97 @@ class CardCreateActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveCard() {
-        val question = questionEditText.text.toString()
-        val answer = answerEditText.text.toString()
+    private fun saveCard(id: Int) {
+        val intent = intent
+        val updatedQuestion = questionEditText.text.toString()
+        val updatedAnswer = answerEditText.text.toString()
+        val IS_UPDATING = intent.getBooleanExtra("IS_UPDATING", false)
+        val token = intent.getStringExtra("token")
 
-        if (question.isNotBlank() && answer.isNotBlank()) {
-            val card = CardsDataItem( question = question, answer = answer)
-            if (cardId == null) {
-                submitData(card)
-            } else {
-                updateCard(card)
+        val client = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("Authorization", "Bearer $token") // Add token to the header
+                    .build()
+                chain.proceed(request)
             }
-        } else {
-            Toast.makeText(this, "Both fields must be filled!", Toast.LENGTH_SHORT).show()
-        }
-    }
+            .build()
 
-    private fun submitData(card: CardsDataItem) {
         val retrofitBuilder = Retrofit.Builder()
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(CARD_URL)
+            .baseUrl("https://probable-bat-dashing.ngrok-free.app/") // Replace with your actual base URL
             .build()
             .create(APICardsService::class.java)
 
-        retrofitBuilder.createCard(card.question, card.answer).enqueue(object : Callback<CardsDataItem> {
-            override fun onResponse(call: Call<CardsDataItem>, response: Response<CardsDataItem>) {
-                if (response.isSuccessful && response.body() != null) {
-                    val resultIntent = Intent()
-                    resultIntent.putExtra("NEW_CARD", response.body()!!.question)
-                    setResult(Activity.RESULT_OK, resultIntent)
-                    finish()
-                    Toast.makeText(this@CardCreateActivity, "Card saved!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Log.e("API Error", "Code: ${response.code()}, Message: ${response.message()}")
-                    Toast.makeText(this@CardCreateActivity, "Failed to save card. Code: ${response.code()}", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(call: Call<CardsDataItem>, t: Throwable) {
-                Log.e("Network Error", "Error: ${t.message}", t)
-                Toast.makeText(this@CardCreateActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    private fun updateCard(card: CardsDataItem) {
-        val retrofitBuilder = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(CARD_URL)
-            .build()
-            .create(APICardsService::class.java)
-
-        cardId?.let { id ->
-            retrofitBuilder.updateCard(id, card.question, card.answer).enqueue(object : Callback<CardsDataItem> {
-                override fun onResponse(call: Call<CardsDataItem>, response: Response<CardsDataItem>) {
+        if (IS_UPDATING) {
+            retrofitBuilder.updateCard("Bearer $token", id, updatedQuestion, updatedAnswer).enqueue(object : Callback<Questions> {
+                override fun onResponse(call: Call<Questions>, response: Response<Questions>) {
                     if (response.isSuccessful) {
                         Toast.makeText(this@CardCreateActivity, "Card updated!", Toast.LENGTH_SHORT).show()
+                        val intent2 = Intent(this@CardCreateActivity, Stack::class.java).apply {
+                            putExtra("token", token)
+                        }
+                        startActivity(intent2)
                         finish()
                     } else {
                         Log.e("API Error", "Code: ${response.code()}, Message: ${response.message()}")
                     }
                 }
 
-                override fun onFailure(call: Call<CardsDataItem>, t: Throwable) {
+                override fun onFailure(call: Call<Questions>, t: Throwable) {
+                    Log.e("Network Error", "Error: ${t.message}", t)
+                }
+            })
+        } else {
+            retrofitBuilder.createCard("Bearer $token", updatedQuestion, updatedAnswer).enqueue(object : Callback<Questions> {
+                override fun onResponse(call: Call<Questions>, response: Response<Questions>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@CardCreateActivity, "Card created!", Toast.LENGTH_SHORT).show()
+                        val intent2 = Intent(this@CardCreateActivity, Stack::class.java).apply {
+                            putExtra("token", token)
+                        }
+                        startActivity(intent2)
+                        finish()
+                    } else {
+                        Log.e("API Error", "Code: ${response.code()}, Message: ${response.message()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<Questions>, t: Throwable) {
                     Log.e("Network Error", "Error: ${t.message}", t)
                 }
             })
         }
     }
 
-    private fun getCard(id: Int) {
-        val retrofitBuilder = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(CARD_URL)
-            .build()
-            .create(APICardsService::class.java)
-
-        retrofitBuilder.getCard(id).enqueue(object : Callback<CardsDataItem> {
-            override fun onResponse(call: Call<CardsDataItem>, response: Response<CardsDataItem>) {
-                if (response.isSuccessful && response.body() != null) {
-                    val card = response.body()!!
-                    questionEditText.setText(card.question)
-                    answerEditText.setText(card.answer)
-                } else {
-                    Log.e("API Error", "Code: ${response.code()}, Message: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<CardsDataItem>, t: Throwable) {
-                Log.e("Network Error", "Error: ${t.message}", t)
-            }
-        })
-    }
-
     private fun deleteCard(id: Int) {
+        val token = intent.getStringExtra("token")
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("Authorization", "Bearer $token") // Add token to the header
+                    .build()
+                chain.proceed(request)
+            }
+            .build()
+
         val retrofitBuilder = Retrofit.Builder()
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(CARD_URL)
+            .baseUrl("https://probable-bat-dashing.ngrok-free.app/") // Replace with your actual base URL
             .build()
             .create(APICardsService::class.java)
 
-        retrofitBuilder.deleteCard(id).enqueue(object : Callback<Void> {
+        retrofitBuilder.deleteCard("Bearer $token", id).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Toast.makeText(this@CardCreateActivity, "Card deleted!", Toast.LENGTH_SHORT).show()
+                    val intent2 = Intent(this@CardCreateActivity, Stack::class.java).apply {
+                        putExtra("token", token)
+                    }
+                    startActivity(intent2)
                     finish()
                 } else {
                     Log.e("API Error", "Code: ${response.code()}, Message: ${response.message()}")

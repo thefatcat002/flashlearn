@@ -6,10 +6,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import android.graphics.Color
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.Toast
 
 class CardQuiz : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

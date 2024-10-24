@@ -24,7 +24,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
     private lateinit var buttonContainer: LinearLayout
-    private lateinit var musicServiceIntent: Intent
 
     companion object {
         const val BASE_URL = "https://probable-bat-dashing.ngrok-free.app/"
@@ -65,17 +64,24 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 for (item in responseBody) { // Renamed 'deck' to 'item' for clarity
+                    val id = item.id
+                    val token = item.token
+                    Log.d("Token", "Token: $token")
+
                     val deckButton = Button(this@MainActivity).apply {
                         text = item.deck // Accessing the deck name from the Deck object
 
                         background = ContextCompat.getDrawable(this@MainActivity, R.drawable.rounded_button)
                         setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white))
-                        setOnClickListener {
-                            val intent = Intent(this@MainActivity, Stack::class.java).apply {
-                                putExtra("ITEM_ID", item.deck) // Accessing the ID from the Deck object
-                            }
-                            startActivity(intent)
+
+                    }
+                    deckButton.setOnClickListener {
+                        val intent = Intent(this@MainActivity, Stack::class.java).apply {
+                            putExtra("token", token)
+                            putExtra("id", id) // Accessing the ID from the Deck object
+                            //
                         }
+                        startActivity(intent)
                     }
                     buttonContainer.addView(deckButton) // Add the button to the container
                 }
@@ -112,8 +118,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
-        stopService(musicServiceIntent)
-    }
+
+
 }
