@@ -1,6 +1,7 @@
 package com.example.flashlearn
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -52,12 +53,16 @@ class CardCreateActivity : AppCompatActivity() {
         }
 
         saveButton.setOnClickListener {
+            saveButton.isEnabled=false
+            saveButton.text="Loading"
             if (questionEditText.text.isNotEmpty() && answerEditText.text.isNotEmpty()) {
                 saveCard(id)
             }
         }
 
         deleteButton.setOnClickListener {
+            deleteButton.isEnabled=false
+            deleteButton.text="Loading"
             deleteCard(id)
         }
 
@@ -120,11 +125,15 @@ class CardCreateActivity : AppCompatActivity() {
                         startActivity(intent2)
                         finish()
                     } else {
+                        saveButton.isEnabled=true
+                        saveButton.text="Save"
                         Log.e("API Error", "Code: ${response.code()}, Message: ${response.message()}")
                     }
                 }
 
                 override fun onFailure(call: Call<Questions>, t: Throwable) {
+                    saveButton.isEnabled=true
+                    saveButton.text="Save"
                     Log.e("Network Error", "Error: ${t.message}", t)
                 }
             })
@@ -139,11 +148,15 @@ class CardCreateActivity : AppCompatActivity() {
                         startActivity(intent2)
                         finish()
                     } else {
+                        saveButton.isEnabled=true
+                        saveButton.text="Save"
                         Log.e("API Error", "Code: ${response.code()}, Message: ${response.message()}")
                     }
                 }
 
                 override fun onFailure(call: Call<Questions>, t: Throwable) {
+                    saveButton.isEnabled=true
+                    saveButton.text="Save"
                     Log.e("Network Error", "Error: ${t.message}", t)
                 }
             })
@@ -179,11 +192,15 @@ class CardCreateActivity : AppCompatActivity() {
                     startActivity(intent2)
                     finish()
                 } else {
+                    deleteButton.isEnabled=true
+                    deleteButton.text="Delete"
                     Log.e("API Error", "Code: ${response.code()}, Message: ${response.message()}")
                 }
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
+                deleteButton.isEnabled=true
+                deleteButton.text="Delete"
                 Log.e("Network Error", "Error: ${t.message}", t)
             }
         })

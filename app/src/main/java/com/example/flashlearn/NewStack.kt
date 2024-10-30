@@ -1,5 +1,6 @@
 package com.example.flashlearn
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -44,10 +45,14 @@ class NewStack : AppCompatActivity() {
         }
 
         submitButton.setOnClickListener {
+            submitButton.isEnabled=false
+            submitButton.text="Loading"
             val deckTitle = editText.text.toString().trim()
             if (deckTitle.isNotBlank()) {
                 createDeck(deckTitle)
             } else {
+                submitButton.isEnabled=true
+                submitButton.text="Submit"
                 Toast.makeText(this, "Deck title cannot be empty", Toast.LENGTH_SHORT).show()
             }
         }
@@ -75,6 +80,8 @@ class NewStack : AppCompatActivity() {
                     startActivity(intent2)
                     finish()
                 } else {
+                    submitButton.isEnabled=true
+                    submitButton.text="Submit"
                     Log.e("NewStack", "Response Body: ${response.errorBody()?.string()}")
                     Toast.makeText(this@NewStack, "Failed to create deck.", Toast.LENGTH_SHORT).show()
                 }
@@ -82,6 +89,8 @@ class NewStack : AppCompatActivity() {
 
             // Change Call<MyDataItem> to Call<PostCreateStack>
             override fun onFailure(call: Call<PostCreateStack>, t: Throwable) {
+                submitButton.isEnabled=true
+                submitButton.text="Submit"
                 Log.e("NewStack", "Error: ${t.message}", t)
                 Toast.makeText(this@NewStack, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }

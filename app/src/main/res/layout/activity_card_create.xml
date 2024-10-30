@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_blue"
+    android:background="@drawable/lightning"
     tools:context=".CardCreateActivity">
 
     <!--title-->
@@ -14,8 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:text="Create card"
-        android:textColor="@color/yellow"
+        android:textColor="@color/black"
         android:textSize="30sp"
+        android:elevation="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,6 +30,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Toolbar
+        android:id="@+id/topbar"
+        android:layout_width="380dp"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_corners"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--enter question-->
     <EditText

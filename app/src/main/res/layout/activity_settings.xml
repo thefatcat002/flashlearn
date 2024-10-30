@@ -20,42 +20,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_rawRes="@raw/button_switch"/>
 
-    <!-- Volume controls (Increase/Decrease buttons) -->
-
-    <!-- Volume Mute/Unmute Button -->
-    <LinearLayout
-        android:layout_width="290dp"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:layout_marginBottom="200dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/decrease"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:background="@drawable/rounded_corners"
-            android:text="-" />
-
-        <TextView
-            android:id="@+id/volumeValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Volume: 50"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/increase"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:background="@drawable/rounded_corners"
-            android:text="+" />
-    </LinearLayout>
-
     <ImageButton
         android:id="@+id/vlm"
         android:layout_width="wrap_content"

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_blue"
+    android:background="@drawable/lightning"
     tools:context=".CardQuiz">
 
     <Toolbar
@@ -20,13 +20,12 @@
 
     <!--Flash Card-->
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/questionTv"
         android:layout_width="330dp"
         android:layout_height="160dp"
         android:layout_marginBottom="180dp"
         android:background="@drawable/rounded_corners"
         android:gravity="center"
-        android:text="Question"
         android:textAlignment="center"
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/toolbar"
@@ -87,7 +86,6 @@
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="Home"
             android:elevation="20dp"
-            android:padding="10dp"
             app:srcCompat="@drawable/home" />
 
         <TextView
@@ -120,7 +118,6 @@
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="Profile"
             android:elevation="20dp"
-            android:padding="10dp"
             app:srcCompat="@drawable/setting" />
 
         <TextView

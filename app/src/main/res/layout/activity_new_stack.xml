@@ -18,13 +18,23 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Toolbar
+        android:id="@+id/topbar"
+        android:layout_width="380dp"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_corners"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!--Name-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="13dp"
         android:text="Create deck"
-        android:textColor="@color/yellow"
+        android:textColor="@color/black"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +46,9 @@
         android:layout_height="50dp"
         android:layout_marginBottom="60dp"
         android:autofillHints="stack"
+        android:gravity="center"
         android:hint="Enter deck title"
+        android:background="#80FFFFFF"
         android:inputType="text"
         android:textAlignment="center"
         android:textSize="20sp"
@@ -55,6 +67,7 @@
         android:background="@drawable/rounded_corners"
         android:hint="Submit"
         android:textAlignment="center"
+        android:gravity="center"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"

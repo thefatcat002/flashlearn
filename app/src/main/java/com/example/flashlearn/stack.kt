@@ -1,5 +1,6 @@
 package com.example.flashlearn
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -22,6 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class Stack : AppCompatActivity() {
     private lateinit var buttonContainer: LinearLayout // Container for dynamically created buttons
     private val questionsList: MutableList<Questions> = mutableListOf()
+    private var token: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,21 +32,36 @@ class Stack : AppCompatActivity() {
 
         val intent = intent
         val id = intent.getIntExtra("id", 0)
-        val token = intent.getStringExtra("token")
+        token = intent.getStringExtra("token")
         Log.e("Token", "Token: $token")
         buttonContainer = findViewById(R.id.stacks) // Ensure this matches your layout
         getQuestions()
         // Button to start CardCreateActivity
         val add = findViewById<Button>(R.id.crt_crd)
         add.setOnClickListener {
+            add.isEnabled=false
+            add.text="Loading"
             val intent = Intent(this, CardCreateActivity::class.java).apply {
                 putExtra("token", token)
             }
             startActivityForResult(intent, CREATE_CARD_REQUEST_CODE) // Start for result
         }
 
+        val start = findViewById<Button>(R.id.start_btn)
+        start.setOnClickListener {
+            start.isEnabled=false
+            start.text="Loading"
+            val intent3 = Intent(this@Stack, CardQuiz::class.java).apply {
+                putExtra("token", token)
+            }
+            startActivity(intent3)
+            finish()
+        }
+
         val delete = findViewById<Button>(R.id.dlt_btn)
         delete.setOnClickListener {
+            delete.isEnabled=false
+            delete.text="Loading"
             deleteDeck(id)
         }
 
@@ -62,10 +79,7 @@ class Stack : AppCompatActivity() {
     }
 
     private fun setupNavigationButtons() {
-        val start = findViewById<Button>(R.id.start_btn)
-        start.setOnClickListener {
-            startActivity(Intent(this, CardQuiz::class.java))
-        }
+
 
         val sett = findViewById<ImageButton>(R.id.settings)
         sett.setOnClickListener {
@@ -117,6 +131,8 @@ class Stack : AppCompatActivity() {
             .build()
             .create(APIDecksService::class.java)
 
+        val delete = findViewById<Button>(R.id.dlt_btn)
+
         retrofitBuilder.deleteDeck(id).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
@@ -125,11 +141,15 @@ class Stack : AppCompatActivity() {
                     startActivity(intent2)
                     finish()
                 } else {
+                    delete.isEnabled=true
+                    delete.text="Delete"
                     Toast.makeText(this@Stack, "Failed to delete deck", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
+                delete.isEnabled=true
+                delete.text="Delete"
                 Toast.makeText(this@Stack, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })

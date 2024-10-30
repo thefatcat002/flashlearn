@@ -3,60 +3,43 @@ package com.example.flashlearn
 import android.app.Service
 import android.content.Intent
 import android.media.MediaPlayer
-import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 
 class MusicService : Service() {
 
-    private lateinit var mediaPlayer: MediaPlayer
-    private val binder = MusicBinder()
-
-    inner class MusicBinder : Binder() {
-        fun getService(): MusicService = this@MusicService
-    }
+    private var mediaPlayer: MediaPlayer? = null
 
     override fun onCreate() {
         super.onCreate()
-        try {
-            mediaPlayer = MediaPlayer.create(this, R.raw.cooking) // Ensure cooking.mp3 is in res/raw
-            mediaPlayer.isLooping = true // Loop the music
-            Log.d("MusicService", "MediaPlayer created and set to loop")
-        } catch (e: Exception) {
-            Log.e("MusicService", "Error initializing MediaPlayer: ${e.message}")
-        }
+        Log.d("MusicService", "Service created")
     }
 
-    fun startMusic() {
-        if (!mediaPlayer.isPlaying) {
-            mediaPlayer.start()
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (mediaPlayer == null) {
+            Log.d("MusicService", "Initializing MediaPlayer")
+            mediaPlayer = MediaPlayer.create(this, R.raw.cooking)
+            mediaPlayer?.isLooping = true
+        }
+        if (mediaPlayer?.isPlaying == false) {
+            mediaPlayer?.start()
             Log.d("MusicService", "Music started")
         } else {
-            Log.d("MusicService", "Music is already playing")
+            Log.d("MusicService", "MediaPlayer already playing")
         }
-    }
-
-    fun stopMusic() {
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
-            mediaPlayer.prepare() // Prepare the media player for future use
-            Log.d("MusicService", "Music stopped")
-        }
-    }
-
-    fun setVolume(volume: Float) {
-        mediaPlayer.setVolume(volume, volume)
-        Log.d("MusicService", "Volume set to: $volume")
+        return START_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        stopMusic()
-        mediaPlayer.release() // Release resources when the service is destroyed
-        Log.d("MusicService", "MediaPlayer released and service destroyed")
+        if (mediaPlayer?.isPlaying == true) {
+            mediaPlayer?.stop()
+            Log.d("MusicService", "Music stopped")
+        }
+        mediaPlayer?.release()
+        mediaPlayer = null
+        Log.d("MusicService", "MediaPlayer released")
     }
 
-    override fun onBind(intent: Intent?): IBinder {
-        return binder
-    }
+    override fun onBind(intent: Intent?): IBinder? = null
 }

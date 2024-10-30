@@ -24,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
     private lateinit var buttonContainer: LinearLayout
+    private lateinit var musicServiceIntent: Intent
 
     companion object {
         const val BASE_URL = "https://probable-bat-dashing.ngrok-free.app/"
@@ -118,6 +119,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(musicServiceIntent)
+    }
 }
