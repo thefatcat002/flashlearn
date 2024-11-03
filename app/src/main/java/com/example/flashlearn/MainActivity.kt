@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                     val deckButton = Button(this@MainActivity).apply {
                         text = item.deck // Accessing the deck name from the Deck object
 
-                        background = ContextCompat.getDrawable(this@MainActivity, R.drawable.rounded_button)
+                        background = ContextCompat.getDrawable(this@MainActivity, R.drawable.rounded_corners)
                         setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white))
 
                     }

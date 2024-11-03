@@ -101,7 +101,7 @@ class Stack : AppCompatActivity() {
     private fun addButtonToStack(id: Int, question: String, answer: String, token: String) {
         val button = Button(this).apply {
             text = question// Display question and answer
-            background = resources.getDrawable(R.drawable.rounded_button, null) // For API 21+
+            background = resources.getDrawable(R.drawable.rounded_corners, null) // For API 21+
             setTextColor(Color.WHITE) // Set text color as needed
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, // Full width
